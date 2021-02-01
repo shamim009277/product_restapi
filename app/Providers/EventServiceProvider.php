@@ -3,9 +3,13 @@
 namespace App\Providers;
 
 use Illuminate\Auth\Events\Registered;
+use App\Events\BrandCreated;
+use App\Events\BrandUpdated;
+use App\Events\BrandDeleted;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use App\Listeners\BrandCashListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -17,6 +21,15 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        BrandCreated::class => [
+            BrandCashListener::class,
+        ],
+        BrandUpdated::class => [
+            BrandCashListener::class,
+        ],
+        BrandDeleted::class => [
+            BrandCashListener::class,
         ],
     ];
 

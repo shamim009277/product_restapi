@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use App\Brand;
 use App\Category;
 use App\Subcategory;
@@ -19,7 +20,11 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brands = Brand::all();
+        
+        $brands = Cache('brands' ,function(){
+            return Brand::with('category','subcategory')->orderBy('id','desc')->get();
+        });
+        //$brands=Brand::with('category','subcategory')->get();
         return view('admin.brand.list',compact('brands'));
     }
 
@@ -65,11 +70,8 @@ class BrandController extends Controller
             Session::flash('flash_message',$plainErrorText);
             return redirect()->back()->withErrors($validator)->withInput()->with('status_color','warning');
         }
+
         $input = $request->all();
-        $input['category_id'] = $request->category_id;
-        $input['subcategory_id'] = $request->subcategory_id;
-        $input['brand_name'] = $request->brand_name;
-        
 
         try {
                 $bug = 0;
@@ -148,11 +150,7 @@ class BrandController extends Controller
         }
         $update = Brand::findOrFail($id);
         $input = $request->all();
-        $input['category_id'] = $request->category_id;
-        $input['subcategory_id'] = $request->subcategory_id;
-        $input['brand_name'] = $request->brand_name;
         
-
         try {
                 $bug = 0;
                 $update->update($input);

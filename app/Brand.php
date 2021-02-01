@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Events\BrandCreated;
+use App\Events\BrandUpdated;
+use App\Events\BrandDeleted;
 
 class Brand extends Model
 {
@@ -10,6 +13,17 @@ class Brand extends Model
 
     protected $fillable=[
     	'category_id','subcategory_id','brand_name'
+    ];
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => BrandCreated::class,
+        'updated' => BrandUpdated::class,
+        'deleted' => BrandDeleted::class,
     ];
 
     public function category(){
